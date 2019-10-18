@@ -2,7 +2,7 @@ import * as Yup from 'yup';
 import User from '../models/User';
 
 class UserController {
-  async store(req, res){
+  async store(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string().required(),
       email: Yup.string()
@@ -19,8 +19,8 @@ class UserController {
 
     const userExists = await User.findOne({ where: { email: req.body.email } });
 
-    if (userExists){
-      return res.status(400).json({ error: 'User already exists.' })
+    if (userExists) {
+      return res.status(400).json({ error: 'User already exists.' });
     }
 
     const { id, name, email, provider } = await User.create(req.body);
@@ -33,7 +33,7 @@ class UserController {
     });
   }
 
-  async update(req, res){
+  async update(req, res) {
     const schema = Yup.object().shape({
       name: Yup.string(),
       email: Yup.string().email(),
@@ -44,7 +44,7 @@ class UserController {
           oldPassword ? field.required() : field
         ),
       confirmPassword: Yup.string().when('password', (password, field) =>
-        password ? field.required().oneOf([Yup.ref('password')]) : field,
+        password ? field.required().oneOf([Yup.ref('password')]) : field
       ),
     });
 
@@ -54,12 +54,12 @@ class UserController {
 
     const { email, oldPassword } = req.body;
 
-    const user = await User.findByPk( req.userId);
+    const user = await User.findByPk(req.userId);
 
-    if (email != user.email) {
+    if (email !== user.email) {
       const userExists = await User.findOne({ where: { email } });
 
-      if (userExists){
+      if (userExists) {
         return res.status(400).json({ error: 'User already exists.' });
       }
     }
