@@ -1,4 +1,4 @@
-//** send mail to dev environment https://mailtrap.io/*/
+//* * send mail to dev environment https://mailtrap.io/*/
 import nodemailer from 'nodemailer';
 import { resolve } from 'path';
 import exphbs from 'express-handlebars';
