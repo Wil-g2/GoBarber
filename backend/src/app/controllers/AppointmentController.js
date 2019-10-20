@@ -1,8 +1,10 @@
 import * as Yup from 'yup';
-import { startOfHour, parseISO, isBefore } from 'date-fns';
+import { startOfHour, parseISO, isBefore, format } from 'date-fns';
+import pt from 'date-fns/locale/pt';
 import User from '../models/User';
 import File from '../models/File';
 import Appointment from '../models/Appointment';
+import NotificationSchema from '../schemas/Notification';
 
 class AppointmentController {
   async index(req, res) {
@@ -35,8 +37,8 @@ class AppointmentController {
 
   async store(req, res) {
     const schema = Yup.object().shape({
-      provider_id: Yup.number().requered(),
-      date: Yup.date().requeired(),
+      provider_id: Yup.number().required(),
+      date: Yup.date().required(),
     });
 
     if (!(await schema.isValid(req.body))) {
@@ -88,6 +90,22 @@ class AppointmentController {
       user_id: req.userId,
       provider_id,
       date: hourStart,
+    });
+
+    /**
+     * Notify appointment provider
+     */
+    const user = await User.findByPk(req.userId);
+    const formattedDate = format(
+      hourStart,
+      " 'dia' dd 'de' MMMM', às' H:mm'h' ",
+      { locale: pt }
+    );
+    console.log(formattedDate);
+
+    await NotificationSchema.create({
+      content: `Novo agendamento de ${user.name} para ${formattedDate} `,
+      user: provider_id,
     });
 
     return res.send(appointment);
