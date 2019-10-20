@@ -21,6 +21,24 @@ class NotificationController {
       .limit(20);
     return res.send(notifications);
   }
+
+  async update(req, res) {
+    const notifications = await Notification.findByIdAndUpdate(
+      req.params.id,
+      {
+        read: true,
+      },
+      { new: true }
+    );
+
+    if (!notifications) {
+      return res
+        .status(400)
+        .json({ error: 'it is problem in update notification.' });
+    }
+
+    return res.json(notifications);
+  }
 }
 
 export default new NotificationController();
