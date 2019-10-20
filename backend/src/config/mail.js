@@ -1,6 +1,6 @@
 export default {
   host: 'smtp.mailtrap.io',
-  port: '465',
+  port: '2525',
   secure: false,
   auth: {
     user: '18d42b656faccb',
